@@ -1,9 +1,9 @@
 import { combineReducers } from "@reduxjs/toolkit";
 
-import { sampleReducers } from "./sample/slices";
+import { utilsReducers } from "./utils/slices";
 
 const rootReducer = combineReducers({
-  sample: sampleReducers,
+  utils: utilsReducers,
 });
 
 export { rootReducer };

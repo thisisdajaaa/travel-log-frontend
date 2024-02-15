@@ -1,18 +1,12 @@
-import React from "react";
+import { ClassValue } from "clsx";
+import React, { forwardRef } from "react";
 import { ImSpinner2 } from "react-icons/im";
 
 import clsxm from "@/utils/clsxm";
 
-enum ButtonVariant {
-  "primary",
-}
+import type { ButtonProps } from "./types";
 
-type ButtonProps = {
-  isLoading?: boolean;
-  variant?: keyof typeof ButtonVariant;
-} & React.ComponentPropsWithRef<"button">;
-
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       children,
@@ -20,11 +14,37 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       disabled: buttonDisabled,
       isLoading,
       variant = "primary",
+      size = "sm",
       ...rest
     },
     ref
   ) => {
     const disabled = isLoading || buttonDisabled;
+
+    const sizes: ClassValue[] = [
+      size === "xs" && "px-11 py-[0.938rem] h-[3.188rem] min-w-[8.875rem]",
+      size === "sm" &&
+        "px-[3.188rem] py-[0.938rem] h-[3.188rem] min-w-[10.938rem]",
+      size === "md" &&
+        "px-[4.438rem] py-[0.938rem] h-[3.188rem] min-w-[15.375rem]",
+      size === "lg" &&
+        "px-[13.625rem] py-[1.25rem] h-[3.625rem] min-w-[33.75rem]",
+    ];
+
+    const variants: ClassValue[] = [
+      variant === "primary" && [
+        "bg-nero text-white",
+        "border border-nero",
+        "hover:bg-blackOut hover:text-white",
+        "active:bg-shishaCoal",
+      ],
+      variant === "secondary" && [
+        "bg-polarDrift text-shishaCoal",
+        "border border-polarDrift",
+        "hover:bg-icicles hover:text-shishaCoal",
+        "active:bg-adirondack",
+      ],
+    ];
 
     return (
       <button
@@ -32,20 +52,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         type="button"
         disabled={disabled}
         className={clsxm(
-          "inline-flex items-center rounded px-4 py-2 font-secondary font-semibold",
-          "focus:outline-none focus-visible:ring focus-visible:ring-primary-500",
+          "inline-flex items-center justify-center rounded-2xl font-secondary font-semibold",
+          "focus:outline-none focus-visible:ring focus-visible:ring-blackOut",
           "shadow-sm",
           "transition-colors duration-75",
-          [
-            variant === "primary" && [
-              "bg-primary-600 text-white",
-              "border border-primary-600",
-              "hover:bg-primary-600 hover:text-white",
-              "active:bg-primary-500",
-              "disabled:bg-primary-400 disabled:hover:bg-primary-400",
-            ],
-          ],
-          "disabled:cursor-not-allowed",
+          sizes,
+          variants,
+          "disabled:cursor-not-allowed disabled:border disabled:border-polarDrift disabled:bg-polarDrift disabled:text-shishaCoal disabled:opacity-75",
           isLoading &&
             "relative text-transparent transition-none hover:text-transparent disabled:cursor-wait",
           className
