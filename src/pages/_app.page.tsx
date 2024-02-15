@@ -2,6 +2,7 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { SessionProvider } from "next-auth/react";
 import { NextSeo } from "next-seo";
+import { Toaster } from "react-hot-toast";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
@@ -46,6 +47,7 @@ const MyApp: NextPage<NextAppProps> = ({
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <AuthProvider>
+              <Toaster />
               <Component {...pageProps} />
             </AuthProvider>
           </PersistGate>

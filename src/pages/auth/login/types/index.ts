@@ -1,5 +1,4 @@
 export type UserForm = {
-  accountNum: string;
-  email: string;
+  identifier: string;
   password: string;
 };

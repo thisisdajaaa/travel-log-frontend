@@ -3794,6 +3794,18 @@
   dependencies:
     mini-svg-data-uri "^1.2.3"
 
+"@tanstack/query-core@5.20.5":
+  version "5.20.5"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.20.5.tgz#12bb02a937cc8f4f158b1428c0ddef5a1f48479b"
+  integrity sha512-T1W28gGgWn0A++tH3lxj3ZuUVZZorsiKcv+R50RwmPYz62YoDEkG4/aXHZELGkRp4DfrW07dyq2K5dvJ4Wl1aA==
+
+"@tanstack/react-query@^5.20.5":
+  version "5.20.5"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.20.5.tgz#ebf57b6d3344478d505ad8db09a8b29262a35dab"
+  integrity sha512-6MHwJ8G9cnOC/XKrwt56QMc91vN7hLlAQNUA0ubP7h9Jj3a/CmkUwT6ALdFbnVP+PsYdhW3WONa8WQ4VcTaSLQ==
+  dependencies:
+    "@tanstack/query-core" "5.20.5"
+
 "@testing-library/dom@^8.3.0", "@testing-library/dom@^8.5.0":
   version "8.18.1"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.18.1.tgz#80f91be02bc171fe5a3a7003f88207be31ac2cf3"
@@ -8503,6 +8515,11 @@ globby@^9.2.0:
     pify "^4.0.1"
     slash "^2.0.0"
 
+goober@^2.1.10:
+  version "2.1.14"
+  resolved "https://registry.yarnpkg.com/goober/-/goober-2.1.14.tgz#4a5c94fc34dc086a8e6035360ae1800005135acd"
+  integrity sha512-4UpC0NdGyAFqLNPnhCT2iHpza2q+RAY3GV85a/mRPdzyPQMsj0KmMMuetdIkzWRbJ+Hgau1EZztq8ImmiMGhsg==
+
 graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4, graceful-fs@^4.2.9:
   version "4.2.10"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.10.tgz#147d3a006da4ca3ce14728c7aefc287c367d7a6c"
@@ -12613,6 +12630,13 @@ react-fast-compare@^2.0.1:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-2.0.4.tgz#e84b4d455b0fec113e0402c329352715196f81f9"
   integrity sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==
+
+react-hot-toast@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/react-hot-toast/-/react-hot-toast-2.4.1.tgz#df04295eda8a7b12c4f968e54a61c8d36f4c0994"
+  integrity sha512-j8z+cQbWIM5LY37pR6uZR6D4LfseplqnuAO4co4u8917hBUvXlEqyP1ZzqVLcqoyUesZZv/ImreoCeHVDpE5pQ==
+  dependencies:
+    goober "^2.1.10"
 
 react-icons@^4.4.0:
   version "4.4.0"
