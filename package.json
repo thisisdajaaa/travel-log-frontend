@@ -23,6 +23,7 @@
         "@next-auth/mongodb-adapter": "^1.1.1",
         "@progress/kendo-react-pdf": "^5.9.0",
         "@reduxjs/toolkit": "^1.8.5",
+        "@tanstack/react-query": "^5.20.5",
         "axios": "^0.27.2",
         "axios-oauth-1.0a": "^0.3.6",
         "bcryptjs": "^2.4.3",
