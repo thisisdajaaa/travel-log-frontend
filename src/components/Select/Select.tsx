@@ -12,6 +12,7 @@ const Select: FC<SelectProps> = ({
   label,
   className,
   isRequired,
+  value,
   ...rest
 }) => {
   const selectRef = useRef<HTMLSelectElement>(null);
@@ -35,6 +36,7 @@ const Select: FC<SelectProps> = ({
 
         <select
           ref={selectRef}
+          value={value}
           className={clsxm(
             className,
             "select select-bordered w-full bg-white text-blackOut",
@@ -43,12 +45,14 @@ const Select: FC<SelectProps> = ({
           onFocus={handleFocus}
           {...rest}
         >
-          <option disabled selected>
+          <option disabled value="">
             Pick one
           </option>
 
-          {options.map((option, index) => (
-            <option key={index}>{option.label}</option>
+          {options?.map((option, index) => (
+            <option key={index} value={option.value}>
+              {option.label}
+            </option>
           ))}
         </select>
       </label>

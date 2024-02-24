@@ -12,13 +12,15 @@ import { GeneratePageTitle } from "@/utils/helpers";
 
 import { site } from "@/config";
 
-import AuthProvider from "@/components/AuthProvider";
 import Layout from "@/components/Layout";
 import { LayoutOptions } from "@/components/Layout/config";
 
 import { persistor, store } from "@/redux/store";
 
 import type { NextAppProps } from "@/types";
+
+import AuthProvider from "@/providers/AuthProvider";
+import QueryClientProvider from "@/providers/QueryClientProvider";
 
 const MyApp: NextPage<NextAppProps> = ({
   Component,
@@ -48,19 +50,21 @@ const MyApp: NextPage<NextAppProps> = ({
       <SessionProvider session={session}>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <AuthProvider>
-              <Toaster />
+            <QueryClientProvider>
+              <AuthProvider>
+                <Toaster />
 
-              {Component.requireAuth ? (
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
-              ) : (
-                <Layout mode={LayoutOptions.NotAuthenticated}>
-                  <Component {...pageProps} />
-                </Layout>
-              )}
-            </AuthProvider>
+                {Component.requireAuth ? (
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
+                ) : (
+                  <Layout mode={LayoutOptions.NotAuthenticated}>
+                    <Component {...pageProps} />
+                  </Layout>
+                )}
+              </AuthProvider>
+            </QueryClientProvider>
           </PersistGate>
         </Provider>
       </SessionProvider>

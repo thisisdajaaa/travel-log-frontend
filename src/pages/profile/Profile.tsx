@@ -2,10 +2,13 @@ import { FormikContext, useFormik } from "formik";
 import { NextPage } from "next";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import React from "react";
+import React, { useMemo } from "react";
 import { FaCamera } from "react-icons/fa";
 
 import { withAuth } from "@/utils/withAuth";
+import { useFetchCountries } from "@/hooks";
+
+import { genderList } from "@/constants/gender";
 
 import FormDatePicker from "@/components/Formik/FormDatePicker";
 import FormInput from "@/components/Formik/FormInput";
@@ -13,10 +16,12 @@ import FormSelect from "@/components/Formik/FormSelect/FormSelect";
 
 import { initialProfileForm } from "./fixtures";
 import type { ProfileForm } from "./types";
-import { genderList } from "@/constants/gender";
+import { Option } from "@/types";
 
 const Profile: NextPage = () => {
   const session = useSession();
+
+  const { data: countries } = useFetchCountries();
 
   const handleSubmit = async (values: ProfileForm) => {
     console.log(values);
@@ -35,6 +40,15 @@ const Profile: NextPage = () => {
     validateOnBlur: false,
     onSubmit: handleSubmit,
   });
+
+  const mappedCountryList: Option[] = useMemo(
+    () =>
+      countries?.data?.map((country) => ({
+        label: country.name,
+        value: country.id.toString(),
+      })) as Option[],
+    [countries]
+  );
 
   console.log("values: ", formikBag.values);
 
@@ -148,10 +162,11 @@ const Profile: NextPage = () => {
                 maxLength={10}
               />
 
-              <FormInput
+              <FormSelect
                 name="country"
                 label="Country"
-                placeholder="Enter Country"
+                options={mappedCountryList}
+                isRequired
               />
             </div>
           </div>

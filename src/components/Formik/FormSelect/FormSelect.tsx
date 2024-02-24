@@ -3,7 +3,7 @@ import React, { ChangeEvent, FC, useCallback, useState } from "react";
 
 import { useFieldError, useUpdateEffect } from "@/hooks";
 
-import Select from "@/components/Select/Select";
+import Select from "@/components/Select";
 
 import type { FormSelectProps } from "./types";
 import ValidationMessage from "../ValidationMessage";

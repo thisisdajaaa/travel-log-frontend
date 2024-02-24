@@ -6,7 +6,7 @@ export const genderList: Option[] = [
     value: "MALE",
   },
   {
-    label: "Male",
+    label: "Female",
     value: "FEMALE",
   },
   {
