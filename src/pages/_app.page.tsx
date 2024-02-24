@@ -13,12 +13,12 @@ import { GeneratePageTitle } from "@/utils/helpers";
 import { site } from "@/config";
 
 import AuthProvider from "@/components/AuthProvider";
+import Layout from "@/components/Layout";
+import { LayoutOptions } from "@/components/Layout/config";
 
 import { persistor, store } from "@/redux/store";
 
 import type { NextAppProps } from "@/types";
-import Layout from "@/components/Layout";
-import { LayoutOptions } from "@/components/Layout/config";
 
 const MyApp: NextPage<NextAppProps> = ({
   Component,

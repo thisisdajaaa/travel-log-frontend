@@ -9,3 +9,8 @@ export type NextAppProps = {
   Component: NextApplicationPage;
   pageProps: AppInitialProps["pageProps"];
 };
+
+export type Option = {
+  label: string;
+  value: string;
+};

@@ -13,7 +13,10 @@ const withOpacityValue = (variable) => {
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./node_modules/react-tailwindcss-datepicker/dist/index.esm.js",
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -57,6 +60,7 @@ module.exports = {
     require("tailwind-scrollbar-hide"),
     require("daisyui"),
   ],
+  darkMode: "",
   daisyui: {
     themes: ["emerald"], // false: only light + dark | true: all themes | array: specific themes like this ["light", "dark", "cupcake"]
     darkTheme: "emerald", // name of one of the included themes for dark mode

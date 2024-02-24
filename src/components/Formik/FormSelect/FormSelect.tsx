@@ -3,40 +3,37 @@ import React, { ChangeEvent, FC, useCallback, useState } from "react";
 
 import { useFieldError, useUpdateEffect } from "@/hooks";
 
-import Input from "@/components/Input";
+import Select from "@/components/Select/Select";
 
-import type { FormInputProps } from "./types";
+import type { FormSelectProps } from "./types";
 import ValidationMessage from "../ValidationMessage";
 
-const FormInput: FC<FormInputProps> = (props) => {
-  const { name, handleInputChange, maxLength, ...rest } = props;
+const FormSelect: FC<FormSelectProps> = (props) => {
+  const { name, handleSelectChange, ...rest } = props;
 
   const [, meta, helpers] = useField(name);
-  const hasError = useFieldError(name);
 
-  const [currentValue, setCurrentValue] = useState<string | number>(
+  const [currentValue, setCurrentValue] = useState<string>(
     meta.value || meta.initialValue
   );
+
+  const hasError = useFieldError(name);
 
   useUpdateEffect(() => {
     setCurrentValue(meta.value);
   }, [meta.value]);
 
   const handleChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
+    (event: ChangeEvent<HTMLSelectElement>) => {
       const text = event.target.value;
-
-      if (maxLength !== undefined && text.length > maxLength) return;
 
       setCurrentValue(text);
       helpers.setValue(text);
       helpers.setError("");
 
-      if (handleInputChange) {
-        handleInputChange(text);
-      }
+      if (handleSelectChange) handleSelectChange(text);
     },
-    [helpers, handleInputChange, maxLength]
+    [helpers, handleSelectChange]
   );
 
   const handleBlur = useCallback(() => {
@@ -45,7 +42,7 @@ const FormInput: FC<FormInputProps> = (props) => {
 
   return (
     <div className="flex flex-col">
-      <Input
+      <Select
         {...rest}
         value={currentValue}
         hasError={hasError}
@@ -58,4 +55,4 @@ const FormInput: FC<FormInputProps> = (props) => {
   );
 };
 
-export default FormInput;
+export default FormSelect;

@@ -10,7 +10,7 @@ export const loginAPI = async (
 ): Promise<ApiResponse<AuthenticationDetailResponse>> => {
   const response = await onParseResponse<AuthenticationDetailResponse>({
     method: "post",
-    url: `/auth/login`,
+    url: "/auth/login",
     data: values,
   });
 
@@ -20,7 +20,7 @@ export const loginAPI = async (
 export const logoutAPI = async (): Promise<ApiResponse<unknown>> => {
   const response = await onParseResponse<unknown>({
     method: "post",
-    url: `/auth/logout`,
+    url: "/auth/logout",
     data: null,
   });
 

@@ -1,28 +1,16 @@
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
-import {
-  FC,
-  Fragment,
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useMemo,
-} from "react";
+import { FC, Fragment, PropsWithChildren, useEffect, useMemo } from "react";
 
 import { noop } from "@/utils/helpers";
-import logger from "@/utils/logger";
-import {
-  useAppDispatch,
-  useAppSelector,
-  useMount,
-  useRouteTracking,
-} from "@/hooks";
+import { useAppDispatch, useRouteTracking } from "@/hooks";
+
 import { actions } from "@/redux/utils";
 
 import { LayoutOptions } from "./config";
 import type { LayoutProps } from "./types";
-import Loading from "../Loading";
 import Header from "../Header";
+import Loading from "../Loading";
 
 const Layout: FC<PropsWithChildren<LayoutProps>> = ({
   mode = LayoutOptions.Authenticated,
