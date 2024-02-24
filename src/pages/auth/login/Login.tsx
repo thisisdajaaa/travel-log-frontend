@@ -1,31 +1,37 @@
+import { FormikContext, useFormik } from "formik";
 import { NextPage } from "next";
+import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+import { MdOutlineLock, MdOutlinePermIdentity } from "react-icons/md";
 
 import Button from "@/components/Button";
-
-import type { UserForm } from "./types";
-import { FormikContext, useFormik } from "formik";
-import { initialUserForm } from "./fixtures";
 import FormInput from "@/components/Formik/FormInput";
+
+import { initialUserForm } from "./fixtures";
+import type { UserForm } from "./types";
 import { LoginFormValidationSchema } from "./validations";
-import ValidationMessage from "@/components/Formik/ValidationMessage";
-import { loginAPI } from "@/services/login";
-import { useAppDispatch } from "@/hooks";
-import { utilsActions } from "@/redux/utils/slices";
-import toast from "react-hot-toast";
 
 const LoginPage: NextPage = () => {
-  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
   const handleSubmit = async (values: UserForm) => {
-    const { success, data, message } = await loginAPI(values);
+    const response = await signIn("credentials", {
+      ...values,
+      redirect: false,
+    });
 
-    if (!success) {
-      toast.error(message as string);
+    if (!response?.ok) {
+      toast.error("Something went wrong!");
       return;
     }
 
-    dispatch(utilsActions.setAccessToken((data?.access_token as string) || ""));
-    toast.success(message as string);
+    router.push("/");
+    toast.success("Successfully logged in user!");
   };
 
   const formikBag = useFormik<UserForm>({
@@ -37,34 +43,54 @@ const LoginPage: NextPage = () => {
     onSubmit: handleSubmit,
   });
 
+  const handleTogglePasswordVisibility = () =>
+    setIsPasswordVisible((prev) => !prev);
+
   return (
     <FormikContext.Provider value={formikBag}>
-      <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md space-y-8">
+      <div className="flex w-full max-w-xl flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="w-full space-y-8">
           <div>
             <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-              Sign in
+              Sign in to Travel Log
             </h2>
           </div>
           <div className="flex flex-col gap-2 rounded-md">
-            <div className="mb-4 flex flex-col">
-              <FormInput name="identifier" placeholder="Email / Username" />
-              <ValidationMessage name="identifier" />
+            <div className="mb-4">
+              <FormInput
+                name="identifier"
+                label="Identifier"
+                isRequired
+                placeholder="Enter your Email/Username"
+                leftIcon={<MdOutlinePermIdentity />}
+              />
             </div>
 
-            <div className="flex flex-col">
-              <FormInput name="password" placeholder="Password" />
-              <ValidationMessage name="password" />
-            </div>
+            <FormInput
+              name="password"
+              label="Password"
+              isRequired
+              type={isPasswordVisible ? "text" : "password"}
+              placeholder="Enter your Password"
+              leftIcon={<MdOutlineLock />}
+              rightIcon={
+                isPasswordVisible ? (
+                  <FaRegEye onClick={handleTogglePasswordVisibility} />
+                ) : (
+                  <FaRegEyeSlash onClick={handleTogglePasswordVisibility} />
+                )
+              }
+            />
           </div>
-          <div>
-            <Button
-              className="w-full justify-center"
-              onClick={formikBag.submitForm}
-            >
-              Sign in
-            </Button>
-          </div>
+        </div>
+
+        <div className="mt-14 w-full">
+          <Button
+            className="btn-primary w-full justify-center"
+            onClick={formikBag.submitForm}
+          >
+            Sign in
+          </Button>
         </div>
       </div>
     </FormikContext.Provider>

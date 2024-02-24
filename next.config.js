@@ -7,11 +7,9 @@ const nextConfig = {
   reactStrictMode: true,
 
   // Uncoment to add domain whitelist
-  // images: {
-  //   domains: [
-  //     'res.cloudinary.com',
-  //   ],
-  // },
+  images: {
+    domains: ["res.cloudinary.com", "daisyui.com"],
+  },
 
   swcMinify: true,
 

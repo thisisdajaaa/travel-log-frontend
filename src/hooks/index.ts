@@ -1,5 +1,6 @@
 export { default as useAppDispatch } from "./useAppDispatch";
 export { default as useAppSelector } from "./useAppSelector";
+export { default as useFetchCountries } from "./useFetchCountries";
 export { default as useFieldError } from "./useFieldError";
 export { default as useFirstMountState } from "./useFirstMountState";
 export { default as useMount } from "./useMount";

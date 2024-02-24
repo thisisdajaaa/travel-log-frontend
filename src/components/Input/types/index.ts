@@ -1,19 +1,12 @@
-import { InputHTMLAttributes } from "react";
-
-type Icon = {
-  src: string;
-  height: number;
-  width: number;
-  onClick?: () => void;
-};
+import { InputHTMLAttributes, ReactNode } from "react";
 
 export type InputProps = {
   label?: string;
-  leftIcon?: Icon;
-  rightIcon?: Icon;
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
   hasError?: boolean;
-  msgError?: string;
-  bgColor?: string;
-  darkenIcon?: boolean;
-  mask?: string;
+  isRequired?: boolean;
+  isReadOnly?: boolean;
+  inputClassname?: string;
+  containerClassname?: string;
 } & InputHTMLAttributes<HTMLInputElement>;

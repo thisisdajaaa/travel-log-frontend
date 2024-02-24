@@ -12,11 +12,19 @@ declare module "next" {
 declare module "next-auth" {
   interface User extends AuthUser {
     id: string;
+    email: string;
+    name: string;
+    accessToken?: string;
+    refreshToken?: string;
   }
 
   interface Session {
     user: {
       id: string;
+      email: string;
+      name: string;
+      accessToken?: string;
+      refreshToken?: string;
     };
   }
 }

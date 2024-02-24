@@ -1,151 +1,79 @@
-import React, { FC, useRef } from "react";
-import InputMask from "react-input-mask";
+import React, { FC, FocusEvent, useRef, WheelEvent } from "react";
 
 import clsxm from "@/utils/clsxm";
 
 import type { InputProps } from "./types";
-import Icon from "../Icon";
-import Typography from "../Typography";
 
 const Input: FC<InputProps> = ({
+  hasError,
+  inputClassname,
+  containerClassname,
+  type,
+  value,
+  onFocus,
+  label,
   leftIcon,
   rightIcon,
   disabled = false,
-  hasError = false,
-  darkenIcon = true,
-  msgError,
-  bgColor = "bg-white",
-  className,
-  type,
-  value,
-  readOnly,
-  onFocus,
-  mask,
+  isRequired,
+  isReadOnly,
   ...rest
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFocus = (event: React.FocusEvent<HTMLInputElement, Element>) => {
-    if (readOnly) inputRef.current?.blur();
-
+  const handleFocus = (event: FocusEvent<HTMLInputElement, Element>) => {
+    if (isReadOnly) inputRef.current?.blur();
     if (onFocus) onFocus(event);
   };
 
-  const handleWheel = (event: React.WheelEvent<HTMLInputElement>) => {
+  const handleWheel = (event: WheelEvent<HTMLInputElement>) => {
     if (type === "number") {
       event.currentTarget.blur();
     }
   };
 
-  if (type === "hidden") {
-    return (
-      <input
-        ref={inputRef}
-        type={type}
-        value={value}
-        readOnly={readOnly}
-        disabled={disabled}
-        onFocus={handleFocus}
-        onWheel={handleWheel}
-        className={clsxm(
-          className,
-          "w-full placeholder-improbable",
-          disabled ? "bg-disable" : "",
-          readOnly && "cursor-default"
-        )}
-        {...rest}
-      />
-    );
-  }
-
   return (
-    <>
-      <div
-        className={clsxm(
-          "flex w-full flex-grow appearance-none items-center",
-          "rounded-[0.938rem] border py-1 px-3 text-blackOut",
-          "duration-150 focus-within:border-nero focus-within:transition-all sm:text-sm",
-          darkenIcon && "focus-within:input-icon",
-          darkenIcon && value && "input-icon",
-          bgColor,
-          hasError && "border-poppySurprise",
-          disabled && "bg-disable"
-        )}
-      >
+    <div className={clsxm("form-control w-full", containerClassname)}>
+      {label && (
+        <label className="label">
+          <span className="label-text font-bold">
+            {label} {isRequired && <span className="text-accent">*</span>}
+          </span>
+        </label>
+      )}
+
+      <div className="relative">
         {leftIcon && (
-          <div className="pl-2 pt-1" onClick={leftIcon?.onClick}>
-            <Icon
-              src={leftIcon.src}
-              height={leftIcon.height}
-              width={leftIcon.width}
-            />
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+            {leftIcon}
           </div>
         )}
 
-        {mask ? (
-          <InputMask
-            mask={mask}
-            type={type}
-            value={value}
-            disabled={disabled}
-            onFocus={handleFocus}
-            onWheel={handleWheel}
-            readOnly={readOnly}
-            className={clsxm(
-              "block w-full border-transparent px-3 py-2 text-base leading-[1.813rem] text-improbable focus:border-transparent focus:outline-none focus:ring-0",
-              "placeholder-improbable",
-              disabled && "bg-disable"
-            )}
-            {...rest}
-          />
-        ) : (
-          <input
-            type={type}
-            value={value}
-            disabled={disabled}
-            onFocus={handleFocus}
-            readOnly={readOnly}
-            onWheel={handleWheel}
-            className={clsxm(
-              className,
-              "block w-full border-transparent px-3 py-2 text-base leading-[1.813rem] text-improbable focus:border-transparent focus:outline-none focus:ring-0",
-              "placeholder-improbable",
-              disabled && "bg-disable",
-              readOnly && "cursor-default"
-            )}
-            {...rest}
-          />
-        )}
+        <input
+          ref={inputRef}
+          type={type}
+          value={value}
+          disabled={disabled || isReadOnly}
+          onFocus={handleFocus}
+          readOnly={isReadOnly}
+          onWheel={handleWheel}
+          className={clsxm(
+            "input input-bordered w-full bg-white text-blackOut",
+            hasError && "input-error",
+            leftIcon && "pl-10",
+            rightIcon && "pr-10",
+            inputClassname
+          )}
+          {...rest}
+        />
 
         {rightIcon && (
-          <div
-            className="cursor-pointer pr-2 pt-1"
-            data-testid={rightIcon.src}
-            onClick={rightIcon?.onClick}
-          >
-            <Icon
-              src={rightIcon.src}
-              height={rightIcon.height}
-              width={rightIcon.width}
-            />
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+            {rightIcon}
           </div>
         )}
       </div>
-
-      {hasError && (
-        <Typography
-          variant="p"
-          fontFamily="font-secondary"
-          size="text-sm"
-          lineHeight="leading-[1.063rem]"
-          textAlign="text-left"
-          color="text-poppySurprise"
-          className="mt-[0.5rem] font-light"
-        >
-          {msgError}
-        </Typography>
-      )}
-    </>
+    </div>
   );
 };
 
