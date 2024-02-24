@@ -1,31 +1,35 @@
 import NextAuth, { type NextAuthOptions, type User } from "next-auth";
 import CredentialProvider from "next-auth/providers/credentials";
 
-const mockUserData: User[] = [
-  {
-    id: "1",
-    accountNum: "1234",
-    email: "test@test.com",
-    name: "Test User",
-  },
-];
+import { UserForm } from "@/pages/auth/login/types";
+
+import { loginAPI } from "@/services/authentication";
 
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialProvider({
       name: "credentials",
       credentials: {
-        accountNum: { label: "Account number", type: "text" },
-        email: { label: "Email address", type: "email" },
+        identifier: { label: "Email/Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      authorize: (credentials) => {
-        // database look up
-        const user = mockUserData.find(
-          (user) => credentials && user.email === credentials["email"]
-        );
+      authorize: async (credentials) => {
+        const requestBody: UserForm = {
+          identifier: credentials?.identifier || "",
+          password: credentials?.password || "",
+        };
 
-        if (!user) return null;
+        const { success, data } = await loginAPI(requestBody);
+
+        if (!success) return null;
+
+        const user: User = {
+          id: data?.id || "",
+          email: data?.email || "",
+          name: data?.username || "",
+          accessToken: data?.access_token,
+          refreshToken: data?.refresh_token,
+        };
 
         return user;
       },
@@ -40,11 +44,22 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     jwt: ({ token, user }) => {
-      if (user) token.id = user.id;
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken;
+      }
       return token;
     },
-    session: ({ session, token }) => {
-      if (token) session.id = token.id;
+    session: async ({ session, token }) => {
+      session.user.id = token.id as string;
+      session.user.email = token.email as string;
+      session.user.name = token.name as string;
+      session.user.accessToken = token.accessToken as string;
+      session.user.refreshToken = token.refreshToken as string;
+
       return session;
     },
   },

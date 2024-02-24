@@ -1,31 +1,33 @@
-import { NextPage } from "next";
-
-import Button from "@/components/Button";
-
-import type { UserForm } from "./types";
 import { FormikContext, useFormik } from "formik";
-import { initialUserForm } from "./fixtures";
-import FormInput from "@/components/Formik/FormInput";
-import { LoginFormValidationSchema } from "./validations";
-import ValidationMessage from "@/components/Formik/ValidationMessage";
-import { loginAPI } from "@/services/login";
-import { useAppDispatch } from "@/hooks";
-import { utilsActions } from "@/redux/utils/slices";
+import { NextPage } from "next";
+import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
 
+import Button from "@/components/Button";
+import FormInput from "@/components/Formik/FormInput";
+import ValidationMessage from "@/components/Formik/ValidationMessage";
+
+import { initialUserForm } from "./fixtures";
+import type { UserForm } from "./types";
+import { LoginFormValidationSchema } from "./validations";
+
 const LoginPage: NextPage = () => {
-  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const handleSubmit = async (values: UserForm) => {
-    const { success, data, message } = await loginAPI(values);
+    const response = await signIn("credentials", {
+      ...values,
+      redirect: false,
+    });
 
-    if (!success) {
-      toast.error(message as string);
+    if (!response?.ok) {
+      toast.error("Something went wrong!");
       return;
     }
 
-    dispatch(utilsActions.setAccessToken((data?.access_token as string) || ""));
-    toast.success(message as string);
+    router.push("/");
+    toast.success("Successfully logged in user!");
   };
 
   const formikBag = useFormik<UserForm>({
@@ -39,7 +41,7 @@ const LoginPage: NextPage = () => {
 
   return (
     <FormikContext.Provider value={formikBag}>
-      <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="flex w-full max-w-[40.625rem] flex-col items-center rounded-xl bg-beluga px-[3.438rem] pt-[4.125rem] pb-[6.5rem]">
         <div className="w-full max-w-md space-y-8">
           <div>
             <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
@@ -53,13 +55,17 @@ const LoginPage: NextPage = () => {
             </div>
 
             <div className="flex flex-col">
-              <FormInput name="password" placeholder="Password" />
+              <FormInput
+                name="password"
+                type="password"
+                placeholder="Password"
+              />
               <ValidationMessage name="password" />
             </div>
           </div>
           <div>
             <Button
-              className="w-full justify-center"
+              className="btn-primary w-full justify-center"
               onClick={formikBag.submitForm}
             >
               Sign in

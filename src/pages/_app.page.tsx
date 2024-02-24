@@ -17,6 +17,8 @@ import AuthProvider from "@/components/AuthProvider";
 import { persistor, store } from "@/redux/store";
 
 import type { NextAppProps } from "@/types";
+import Layout from "@/components/Layout";
+import { LayoutOptions } from "@/components/Layout/config";
 
 const MyApp: NextPage<NextAppProps> = ({
   Component,
@@ -48,7 +50,16 @@ const MyApp: NextPage<NextAppProps> = ({
           <PersistGate loading={null} persistor={persistor}>
             <AuthProvider>
               <Toaster />
-              <Component {...pageProps} />
+
+              {Component.requireAuth ? (
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              ) : (
+                <Layout mode={LayoutOptions.NotAuthenticated}>
+                  <Component {...pageProps} />
+                </Layout>
+              )}
             </AuthProvider>
           </PersistGate>
         </Provider>

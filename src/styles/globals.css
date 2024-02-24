@@ -80,4 +80,10 @@
     font-weight: 300;
     src: url(/fonts/Gotham/GothamLight.ttf) format("ttf");
   }
+
+  @layer components {
+    .fit-content-element {
+      @apply w-fit overflow-x-auto xl:w-auto;
+    }
+  }
 }
