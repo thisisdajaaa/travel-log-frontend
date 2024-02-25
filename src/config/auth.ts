@@ -1,5 +1,5 @@
 import { AUTH_PAGE_URL } from "@/constants/pageUrl";
 
-const { LOGIN } = AUTH_PAGE_URL;
+const { LOGIN, REGISTRATION } = AUTH_PAGE_URL;
 
-export const whitelistPaths = [LOGIN];
+export const whitelistPaths = [LOGIN, REGISTRATION];
