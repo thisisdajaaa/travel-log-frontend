@@ -45,13 +45,10 @@ export const registerAPI = async (
 
 
 //Profile  
-export const userProfileAPI = async (
-  values: ProfileForm
-): Promise<ApiResponse<ProfileForm>> => {
+export const userProfileAPI = async (): Promise<ApiResponse<ProfileForm>> => {
   const response = await onParseResponse<ProfileForm> ({
   method: "get",
-  url: "/profile",
-  data: values,
+  url: "/profile"
   });
 
   return response;

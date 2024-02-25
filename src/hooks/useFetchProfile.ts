@@ -3,8 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 
 const useFetchProfile = () => {
   const response = useQuery({
-    queryKey: ["profile"],
-   // queryFn: userProfileAPI,
+    queryKey: ["profiledata"],
+    queryFn: userProfileAPI,
   });
 
   return response;

@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-
 import { getCountriesAPI } from "@/services/countries";
 
 const useFetchCountries = () => {

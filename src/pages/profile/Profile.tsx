@@ -17,14 +17,22 @@ import FormSelect from "@/components/Formik/FormSelect/FormSelect";
 import { initialProfileForm } from "./fixtures";
 import type { ProfileForm } from "./types";
 import { Option } from "@/types";
+import useFetchProfile from "@/hooks/useFetchProfile";
+import { json } from "stream/consumers";
 
 const Profile: NextPage = () => {
   const session = useSession();
 
   const { data: countries } = useFetchCountries();
 
+  const { data: profiledata} = useFetchProfile();
+
+  // const data = JSON.stringify(profiledata?.data);
+  // console.log("Countries ==="+formattedProfileData);
+
   const handleSubmit = async (values: ProfileForm) => {
-    console.log(values);
+    
+
   };
 
   const formattedInitialProfileForm: ProfileForm = {
