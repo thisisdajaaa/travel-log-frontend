@@ -17,7 +17,7 @@ import { LayoutOptions } from "@/components/Layout/config";
 
 import { persistor, store } from "@/redux/store";
 
-import type { NextAppProps } from "@/types";
+import type { NextAppProps } from "@/types/client";
 
 import AuthProvider from "@/providers/AuthProvider";
 import QueryClientProvider from "@/providers/QueryClientProvider";

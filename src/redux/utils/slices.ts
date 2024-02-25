@@ -9,6 +9,9 @@ const utilsSlice = createSlice({
     setAccessToken: (state, { payload }: PayloadAction<string>) => {
       state.accessToken = payload;
     },
+    setRefreshToken: (state, { payload }: PayloadAction<string>) => {
+      state.refreshToken = payload;
+    },
   },
 });
 

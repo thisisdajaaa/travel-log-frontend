@@ -1,7 +1,7 @@
 import { onParseResponse } from "@/utils/helpers";
 
-import { ApiResponse } from "@/types";
-import { CountryDetailResponse } from "@/types/countries";
+import { ApiResponse } from "@/types/server/config";
+import { CountryDetailResponse } from "@/types/server/countries";
 
 export const getCountriesAPI = async (): Promise<
   ApiResponse<CountryDetailResponse[]>

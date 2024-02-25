@@ -1,12 +1,41 @@
-import { RegisterForm } from './../pages/auth/registration/types/index';
+import axios from "axios";
+
 import { onParseResponse } from "@/utils/helpers";
+import logger from "@/utils/logger";
 
 import type { UserForm } from "@/pages/auth/login/types";
 
-import type { ApiResponse } from "@/types";
-import type { AuthenticationDetailResponse } from "@/types/authentication";
-import { dataTagSymbol } from "@tanstack/react-query";
-import { ProfileForm } from '@/pages/profile/types';
+import { store } from "@/redux/store";
+import { actions } from "@/redux/utils";
+
+import type { AuthenticationDetailResponse } from "@/types/server/authentication";
+import type { ApiResponse } from "@/types/server/config";
+
+export const refreshToken = async (): Promise<string> => {
+  try {
+    const state = store.getState();
+    const refreshToken = state.utils.refreshToken;
+
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh-token`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
+        },
+      }
+    );
+
+    const { accessToken, refreshToken: newRefreshToken } = response.data;
+    store.dispatch(actions.callSetAccessToken(accessToken));
+    store.dispatch(actions.callSetRefreshToken(newRefreshToken));
+
+    return accessToken;
+  } catch (error) {
+    logger(error);
+    throw error;
+  }
+};
 
 export const loginAPI = async (
   values: UserForm
@@ -30,25 +59,24 @@ export const logoutAPI = async (): Promise<ApiResponse<unknown>> => {
   return response;
 };
 
-//Register User 
+//Register User
 export const registerAPI = async (
   values: RegisterForm
 ): Promise<ApiResponse<unknown>> => {
-  const response = await onParseResponse<unknown> ({
-  method: "post",
-  url: "/auth/register",
-  data: values,
+  const response = await onParseResponse<unknown>({
+    method: "post",
+    url: "/auth/register",
+    data: values,
   });
 
   return response;
 };
 
-
-//Profile  
+//Profile
 export const userProfileAPI = async (): Promise<ApiResponse<ProfileForm>> => {
-  const response = await onParseResponse<ProfileForm> ({
-  method: "get",
-  url: "/profile"
+  const response = await onParseResponse<ProfileForm>({
+    method: "get",
+    url: "/profile",
   });
 
   return response;

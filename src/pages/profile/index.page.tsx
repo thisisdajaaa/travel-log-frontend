@@ -1,7 +1,6 @@
 import { FormikContext, useFormik } from "formik";
 import { NextPage } from "next";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
 import React, { useMemo } from "react";
 import { FaCamera } from "react-icons/fa";
 
@@ -14,32 +13,61 @@ import FormDatePicker from "@/components/Formik/FormDatePicker";
 import FormInput from "@/components/Formik/FormInput";
 import FormSelect from "@/components/Formik/FormSelect/FormSelect";
 
+import type { Option } from "@/types/client";
+import { ProfileDetailResponse } from "@/types/server/profile";
+
 import { initialProfileForm } from "./fixtures";
-import type { ProfileForm } from "./types";
-import { Option } from "@/types";
-import useFetchProfile from "@/hooks/useFetchProfile";
-import { json } from "stream/consumers";
+import useFetchProfile from "./hooks/useFetchProfile";
+import type { ProfileForm, ProfileProps } from "./types";
 
-const Profile: NextPage = () => {
-  const session = useSession();
-
+const Profile: NextPage<ProfileProps> = () => {
   const { data: countries } = useFetchCountries();
+  const { data: profile } = useFetchProfile();
 
-  const { data: profiledata} = useFetchProfile();
+  console.log("profile: ", profile);
+
+  const { data: profiledata } = useFetchProfile();
 
   // const data = JSON.stringify(profiledata?.data);
   // console.log("Countries ==="+formattedProfileData);
 
-  const handleSubmit = async (values: ProfileForm) => {
-    
+  const handleSubmit = async (values: ProfileForm) => {};
 
-  };
+  const formattedInitialProfileForm: ProfileForm = useMemo(() => {
+    if (!profile?.data) return { ...initialProfileForm };
 
-  const formattedInitialProfileForm: ProfileForm = {
-    ...initialProfileForm,
-    username: session?.data?.user?.name || "",
-    email: session?.data?.user?.email || "",
-  };
+    const {
+      firstName,
+      lastName,
+      middleName,
+      addressOne,
+      addressTwo,
+      birthDate,
+      city,
+      country,
+      email,
+      sex,
+      state,
+      username,
+      zipCode,
+    } = profile?.data as ProfileDetailResponse;
+
+    return {
+      username: username,
+      email: email,
+      firstName,
+      middleName,
+      lastName,
+      birthday: { startDate: birthDate, endDate: birthDate },
+      address1: addressOne,
+      address2: addressTwo,
+      city,
+      zipCode,
+      country,
+      state,
+      gender: sex,
+    };
+  }, [profile?.data]);
 
   const formikBag = useFormik<ProfileForm>({
     initialValues: formattedInitialProfileForm,
