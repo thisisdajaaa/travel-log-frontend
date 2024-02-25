@@ -2,34 +2,28 @@ import React from 'react'
 import { NextPage } from 'next'
 import { FormikContext, useFormik } from 'formik'
 import FormInput from '@/components/Formik/FormInput'
-import { MdEmail, MdKey, MdPassword, MdPeople } from 'react-icons/md'
+import { MdEmail, MdKey, MdPeople } from 'react-icons/md'
 import Button from '@/components/Button'
 import { RegisterForm } from './types'
 import { initialRegistrationForm } from './fixtures'
 import { RegistrationFormValidationScheme } from './validations'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
-import { signIn } from 'next-auth/react'
+import { registerAPI } from '@/services/authentication'
 
 const IndexPage: NextPage = () => {
 
     const router = useRouter();
-
+    
     const handleSubmit = async (values: RegisterForm) => {
-
-      console.log("Values==="+ JSON.stringify(values));
-
-      const response = await signIn("details", {
-        ...values,
-        redirect: false,
-      });
-
-      if(!response?.ok) {
-        toast.error("SOmething went wrong...");
+      const response = await registerAPI(values);
+      
+      if(response.success) {
+          toast.success("Successfully registerred.");
+        }else{
+          toast.error("Something went wrong...");
       }
-
-      router.push("/registration");
-      toast.success("Successfully registerred.");
+       
     };
 
     const formikBag = useFormik<RegisterForm>({

@@ -46,6 +46,10 @@ const IndexPage: NextPage = () => {
   const handleTogglePasswordVisibility = () =>
     setIsPasswordVisible((prev) => !prev);
 
+  const handleRegister= () => {
+    router.push("/auth/registration");
+  }
+
   return (
     <FormikContext.Provider value={formikBag}>
       <div className="flex w-full max-w-xl flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -91,6 +95,16 @@ const IndexPage: NextPage = () => {
           >
             Sign in
           </Button>
+        </div>
+
+        <div className="mt-5 w-full">
+          If you do not have accout yet? Register now.
+          <Button
+            className="btn-secondary ml-5 w-full/2 align-item-right"
+            onClick ={handleRegister}
+            >
+            Click here to register
+            </Button>
         </div>
       </div>
     </FormikContext.Provider>
