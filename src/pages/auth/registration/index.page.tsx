@@ -1,6 +1,6 @@
 import { FormikContext, useFormik } from "formik";
 import { NextPage } from "next";
-import React from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { MdEmail, MdKey, MdPeople } from "react-icons/md";
 
@@ -12,9 +12,12 @@ import { registerAPI } from "@/services/authentication";
 import { initialRegistrationForm } from "./fixtures";
 import { RegisterForm } from "./types";
 import { RegistrationFormValidationScheme } from "./validations";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import Link from "next/link";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 const IndexPage: NextPage = () => {
-  const handleSubmit = async (values: RegisterForm) => {
+    const handleSubmit = async (values: RegisterForm) => {
     const { success, message } = await registerAPI(values);
 
     if (!success) {
@@ -36,6 +39,21 @@ const IndexPage: NextPage = () => {
     onSubmit: handleSubmit,
   });
 
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  
+  
+  const handleTogglePasswordVisibility = (action: String) => {
+    if(action == "password") {
+      setIsPasswordVisible(visible => !visible);
+    } 
+    if(action == "confirm") {
+      setIsConfirmPasswordVisible(visible => !visible);
+    }
+  };
+
+
+  const handleToggleConfirmPasswordVisibility = () => {};
   return (
     <FormikContext.Provider value={formikBag}>
       <div className="flex w-full max-w-xl flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -70,19 +88,33 @@ const IndexPage: NextPage = () => {
               name="password"
               label="Password"
               isRequired
-              type="password"
+              type={isPasswordVisible ? "text": "password"}
               placeholder="Enter your Password"
               leftIcon={<MdKey />}
+              rightIcon = {
+              isPasswordVisible ? (
+                  <FaRegEye onClick={handleTogglePasswordVisibility.bind(this, "password")}  />
+                ): (
+                  <FaRegEyeSlash onClick={handleTogglePasswordVisibility.bind(this, "password")} />
+                )
+              }
               // TODO: add logic for toggling between type password or text for password visibility
             />
 
             <FormInput
               name="confirmPassword"
-              label="Password"
+              label="Confirm Password"
               isRequired
-              type="password"
+              type={isConfirmPasswordVisible ? "text" : "password"}
               placeholder="Confirm your Password"
               leftIcon={<MdKey />}
+              rightIcon = {
+                isConfirmPasswordVisible ? (
+                  <FaRegEye onClick={handleTogglePasswordVisibility.bind(this, "confirm")}  />
+                ) : (
+                  <FaRegEyeSlash onClick={handleTogglePasswordVisibility.bind(this, "confirm")} />
+                )
+              }
               // TODO: add logic for toggling between type password or text for password visibility
             />
           </div>
@@ -96,6 +128,16 @@ const IndexPage: NextPage = () => {
             Register
           </Button>
         </div>
+
+        <div className="mt-14 w-full">
+        <Link href="/auth/login">
+        <a className="flex justify-center items-center">
+          <FaArrowLeftLong className="mr-1" />
+          Back to Login
+        </a>
+      </Link>
+        </div>
+
       </div>
     </FormikContext.Provider>
   );
