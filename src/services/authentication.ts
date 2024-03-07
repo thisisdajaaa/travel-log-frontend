@@ -10,6 +10,8 @@ import { actions } from "@/redux/utils";
 
 import type { AuthenticationDetailResponse } from "@/types/server/authentication";
 import type { ApiResponse } from "@/types/server/config";
+import { RegisterForm } from "@/pages/auth/registration/types";
+import { ProfileForm } from "@/pages/profile/types";
 
 export const refreshToken = async (): Promise<string> => {
   try {
