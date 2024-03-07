@@ -1,10 +1,9 @@
 import { FormikContext, useFormik } from "formik";
+import { debounce } from "lodash";
 import { NextPage } from "next";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useMemo } from "react";
 import toast from "react-hot-toast";
-import { FaCamera } from "react-icons/fa";
 
 import { withAuth } from "@/utils/withAuth";
 import { useFetchCountries } from "@/hooks";
@@ -12,9 +11,13 @@ import { useFetchCountries } from "@/hooks";
 import { genderList } from "@/constants/gender";
 
 import Button from "@/components/Button";
+import { FileUploadOptions } from "@/components/FileUpload/config";
 import FormDatePicker from "@/components/Formik/FormDatePicker";
+import FormFileUpload from "@/components/Formik/FormFileUpload";
 import FormInput from "@/components/Formik/FormInput";
 import FormSelect from "@/components/Formik/FormSelect";
+
+import { uploadCoverImage, uploadProfileImage } from "@/services/file";
 
 import type { Option } from "@/types/client";
 import { ProfileDetailResponse, ProfileRequest } from "@/types/server/profile";
@@ -44,6 +47,8 @@ const Profile: NextPage = () => {
       sex,
       username,
       addressDetail,
+      profilePhoto,
+      coverPhoto,
     } = profile?.data as ProfileDetailResponse;
 
     const { addressOne, addressTwo, city, country, state, zipcode } =
@@ -61,6 +66,8 @@ const Profile: NextPage = () => {
       city,
       zipcode,
       country: country ? String(country.id) : "",
+      profilePhoto,
+      coverPhoto,
       state,
       sex,
     };
@@ -127,35 +134,48 @@ const Profile: NextPage = () => {
     [countries]
   );
 
-  return (
-    <div className="mx-auto my-10 max-w-4xl overflow-hidden rounded-lg shadow-lg">
-      <div className="relative">
-        <Image
-          alt="cover-photo"
-          src="/images/mock-cover.jpg"
-          layout="responsive"
-          className="rounded-t-lg object-cover"
-          height={200}
-          width={800}
-        />
-        <div className="absolute -bottom-16 left-10">
-          <div className="relative h-[168px] w-[168px] rounded-full border-4 border-white">
-            <Image
-              alt="profile-photo"
-              src="/images/mock-avatar.jpg"
-              layout="fill"
-              objectFit="cover"
-              className="rounded-full transition duration-300 hover:brightness-75"
-            />
+  const handlePhotoChange = (type: FileUploadOptions) =>
+    debounce(async (value: File) => {
+      if (value) {
+        switch (type) {
+          case FileUploadOptions.Avatar: {
+            await uploadProfileImage(value);
+            toast.success("Profile photo successfully saved!");
+            break;
+          }
 
-            <div className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 md:mt-3 md:text-clip">
-              <FaCamera className="text-white" />
-            </div>
+          case FileUploadOptions.Cover: {
+            await uploadCoverImage(value);
+            toast.success("Cover photo successfully saved!");
+            break;
+          }
+
+          default: {
+            break;
+          }
+        }
+      }
+    }, 500);
+
+  return (
+    <FormikContext.Provider value={formikBag}>
+      <div className="mx-auto my-10 max-w-4xl overflow-hidden rounded-lg shadow-lg">
+        <div className="relative">
+          <FormFileUpload
+            variant={FileUploadOptions.Cover}
+            name="coverPhoto"
+            handleFileUpload={handlePhotoChange(FileUploadOptions.Cover)}
+          />
+
+          <div className="absolute -bottom-16 left-10">
+            <FormFileUpload
+              variant={FileUploadOptions.Avatar}
+              name="profilePhoto"
+              handleFileUpload={handlePhotoChange(FileUploadOptions.Avatar)}
+            />
           </div>
         </div>
-      </div>
 
-      <FormikContext.Provider value={formikBag}>
         <div className="mt-20 p-8">
           <div className="mb-10">
             <h2 className="mb-4 text-xl font-semibold">Basic Information</h2>
@@ -288,8 +308,8 @@ const Profile: NextPage = () => {
             </Button>
           </div>
         </div>
-      </FormikContext.Provider>
-    </div>
+      </div>
+    </FormikContext.Provider>
   );
 };
 

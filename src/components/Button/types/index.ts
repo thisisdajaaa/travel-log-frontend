@@ -5,6 +5,8 @@ export enum ButtonVariant {
   "secondary",
   "danger",
   "info",
+  "default",
+  "ghost",
 }
 
 export enum ButtonSize {

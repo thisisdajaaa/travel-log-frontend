@@ -14,4 +14,6 @@ export type ProfileForm = {
   city: string;
   zipcode: string;
   country: string;
+  profilePhoto?: File | string | null;
+  coverPhoto?: File | string | null;
 };

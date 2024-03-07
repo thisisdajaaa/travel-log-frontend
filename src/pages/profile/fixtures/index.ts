@@ -13,5 +13,7 @@ export const initialProfileForm: ProfileForm = {
   country: "",
   sex: null,
   state: "",
-  zipCode: "",
+  zipcode: "",
+  profilePhoto: null,
+  coverPhoto: null,
 };

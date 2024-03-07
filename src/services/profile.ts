@@ -18,7 +18,7 @@ export const getProfileAPI = async (): Promise<
 };
 
 export const updateProfileAPI = async (
-  values: ProfileRequest
+  values: Partial<ProfileRequest>
 ): Promise<ApiResponse<ProfileDetailResponse>> => {
   const response = await onParseResponse<ProfileDetailResponse>({
     method: "patch",

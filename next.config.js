@@ -8,7 +8,7 @@ const nextConfig = {
 
   // Uncoment to add domain whitelist
   images: {
-    domains: ["res.cloudinary.com", "daisyui.com"],
+    domains: ["res.cloudinary.com", "daisyui.com", "127.0.0.1"],
   },
 
   swcMinify: true,
