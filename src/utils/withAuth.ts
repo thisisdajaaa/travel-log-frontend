@@ -1,4 +1,4 @@
-import type { NextApplicationPage } from "@/types";
+import { NextApplicationPage } from "@/types/client";
 
 export const withAuth = (Component: NextApplicationPage) => {
   Component.requireAuth = true;

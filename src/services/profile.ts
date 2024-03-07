@@ -1,23 +1,29 @@
-import { AxiosRequestHeaders } from "axios";
-
 import { onParseResponse } from "@/utils/helpers";
 
-import { ApiResponse } from "@/types/server/config";
-import { ProfileDetailResponse } from "@/types/server/profile";
+import type { ApiResponse } from "@/types/server/config";
+import type {
+  ProfileDetailResponse,
+  ProfileRequest,
+} from "@/types/server/profile";
 
-export const getProfileAPI = async (
-  accessToken?: string
-): Promise<ApiResponse<ProfileDetailResponse>> => {
-  const headers: AxiosRequestHeaders = {};
-
-  if (accessToken) {
-    headers["Authorization"] = `Bearer ${accessToken}`;
-  }
-
+export const getProfileAPI = async (): Promise<
+  ApiResponse<ProfileDetailResponse>
+> => {
   const response = await onParseResponse<ProfileDetailResponse>({
     method: "get",
     url: "/profile",
-    headers,
+  });
+
+  return response;
+};
+
+export const updateProfileAPI = async (
+  values: ProfileRequest
+): Promise<ApiResponse<ProfileDetailResponse>> => {
+  const response = await onParseResponse<ProfileDetailResponse>({
+    method: "patch",
+    url: "/profile",
+    data: values,
   });
 
   return response;

@@ -10,8 +10,6 @@ import { MdOutlineLock, MdOutlinePermIdentity } from "react-icons/md";
 import Button from "@/components/Button";
 import FormInput from "@/components/Formik/FormInput";
 
-import { loginAPI } from "@/services/authentication";
-
 import { initialUserForm } from "./fixtures";
 import type { UserForm } from "./types";
 import { LoginFormValidationSchema } from "./validations";
