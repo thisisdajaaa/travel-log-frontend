@@ -1,6 +1,12 @@
+import type { ComponentPropsWithRef } from "react";
+
 export enum ButtonVariant {
   "primary",
   "secondary",
+  "danger",
+  "info",
+  "default",
+  "ghost",
 }
 
 export enum ButtonSize {
@@ -14,4 +20,4 @@ export type ButtonProps = {
   isLoading?: boolean;
   variant?: keyof typeof ButtonVariant;
   size?: keyof typeof ButtonSize;
-} & React.ComponentPropsWithRef<"button">;
+} & ComponentPropsWithRef<"button">;

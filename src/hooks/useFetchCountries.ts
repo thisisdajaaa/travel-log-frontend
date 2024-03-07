@@ -3,7 +3,7 @@ import { getCountriesAPI } from "@/services/countries";
 
 const useFetchCountries = () => {
   const response = useQuery({
-    queryKey: ["countries"],
+    queryKey: ["getCountries"],
     queryFn: getCountriesAPI,
   });
 

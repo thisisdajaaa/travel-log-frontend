@@ -11,7 +11,9 @@ export const initialProfileForm: ProfileForm = {
   birthday: { startDate: null, endDate: null },
   city: "",
   country: "",
-  gender: "",
+  sex: null,
   state: "",
-  zipCode: "",
+  zipcode: "",
+  profilePhoto: null,
+  coverPhoto: null,
 };

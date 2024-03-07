@@ -36,7 +36,7 @@ const Select: FC<SelectProps> = ({
 
         <select
           ref={selectRef}
-          value={value}
+          value={value == null ? "" : value}
           className={clsxm(
             className,
             "select select-bordered w-full bg-white text-blackOut",

@@ -1,4 +1,4 @@
-import { Option } from "@/types";
+import { Option } from "@/types/client";
 
 export const genderList: Option[] = [
   {
@@ -14,3 +14,6 @@ export const genderList: Option[] = [
     value: "OTHER",
   },
 ];
+
+export const getGenderListValues = (): string[] =>
+  genderList.map(({ value }) => value);

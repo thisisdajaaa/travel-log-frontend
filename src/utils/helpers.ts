@@ -1,11 +1,12 @@
 import { AxiosError, AxiosRequestConfig } from "axios";
 import { FormEvent } from "react";
 
-import { instance } from "@/config";
+import { baseInstance } from "@/config";
 
-import { ApiResponse } from "@/types";
+import { ApiResponse } from "@/types/server/config";
 
 import logger from "./logger";
+import { GetServerSidePropsContext } from "next";
 
 export const capitalizeFirstLetter = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -58,7 +59,7 @@ export const onParseResponse = async <T>(args: AxiosRequestConfig) => {
   let formattedResponse: ApiResponse<T>;
 
   try {
-    const { data } = await instance({ ...args });
+    const { data } = await baseInstance({ ...args });
 
     formattedResponse = data;
   } catch (error) {

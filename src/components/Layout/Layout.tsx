@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
 import { FC, Fragment, PropsWithChildren, useEffect, useMemo } from "react";
+import { batch } from "react-redux";
 
 import { noop } from "@/utils/helpers";
 import { useAppDispatch, useRouteTracking } from "@/hooks";
@@ -22,9 +23,15 @@ const Layout: FC<PropsWithChildren<LayoutProps>> = ({
   const isRouteChange = useRouteTracking(noop, []);
 
   useEffect(() => {
-    if (session?.user?.accessToken)
-      dispatch(actions.callSetAccessToken(session?.user?.accessToken));
-  }, [dispatch, session?.user?.accessToken]);
+    if (session?.user?.accessToken && session?.user?.refreshToken) {
+      batch(() => {
+        dispatch(actions.callSetAccessToken(session?.user?.accessToken || ""));
+        dispatch(
+          actions.callSetRefreshToken(session?.user?.refreshToken || "")
+        );
+      });
+    }
+  }, [dispatch, session?.user?.accessToken, session?.user?.refreshToken]);
 
   const renderContent = useMemo(() => {
     if (!session && mode === LayoutOptions.NotAuthenticated)
