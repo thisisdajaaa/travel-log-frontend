@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { signOut, SignOutParams } from "next-auth/react";
 import React, { FC, useRef, useState } from "react";
 
-import { useAppDispatch } from "@/hooks";
+import { useAppDispatch, useFetchProfile } from "@/hooks";
 
 import { AUTHENTICATED_PAGE_URL } from "@/constants/pageUrl";
 
@@ -16,6 +16,7 @@ import Input from "../Input";
 const Header: FC = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { data: profile } = useFetchProfile();
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -64,7 +65,7 @@ const Header: FC = () => {
           >
             <div className="w-10 rounded-full">
               <Image
-                src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                src={profile?.data?.profilePhoto || "/images/mock-avatar.jpg"}
                 alt="User Avatar"
                 height={40}
                 width={40}

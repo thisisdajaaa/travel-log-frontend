@@ -6,7 +6,7 @@ import React, { useMemo } from "react";
 import toast from "react-hot-toast";
 
 import { withAuth } from "@/utils/withAuth";
-import { useFetchCountries } from "@/hooks";
+import { useFetchCountries, useFetchProfile } from "@/hooks";
 
 import { genderList } from "@/constants/gender";
 
@@ -23,7 +23,6 @@ import type { Option } from "@/types/client";
 import { ProfileDetailResponse, ProfileRequest } from "@/types/server/profile";
 
 import { initialProfileForm } from "./fixtures";
-import useFetchProfile from "./hooks/useFetchProfile";
 import useUpdateProfile from "./hooks/useUpdateProfile";
 import type { ProfileForm } from "./types";
 import { ProfileFormValidationSchema } from "./validations";
