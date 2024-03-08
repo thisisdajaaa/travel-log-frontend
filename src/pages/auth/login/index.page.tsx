@@ -1,5 +1,6 @@
 import { FormikContext, useFormik } from "formik";
 import { NextPage } from "next";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
@@ -7,11 +8,16 @@ import toast from "react-hot-toast";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { MdOutlineLock, MdOutlinePermIdentity } from "react-icons/md";
 
+import {
+  AUTHENTICATED_PAGE_URL,
+  NON_AUTHENTICATED_PAGE_URL,
+} from "@/constants/pageUrl";
+
 import Button from "@/components/Button";
 import FormInput from "@/components/Formik/FormInput";
 
-import { initialUserForm } from "./fixtures";
-import type { UserForm } from "./types";
+import { initialLoginForm } from "./fixtures";
+import type { LoginForm } from "./types";
 import { LoginFormValidationSchema } from "./validations";
 
 const IndexPage: NextPage = () => {
@@ -19,7 +25,7 @@ const IndexPage: NextPage = () => {
 
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
-  const handleSubmit = async (values: UserForm) => {
+  const handleSubmit = async (values: LoginForm) => {
     const response = await signIn("credentials", {
       ...values,
       redirect: false,
@@ -30,12 +36,12 @@ const IndexPage: NextPage = () => {
       return;
     }
 
-    router.push("/");
+    router.push(AUTHENTICATED_PAGE_URL.HOME);
     toast.success("Successfully logged in user!");
   };
 
-  const formikBag = useFormik<UserForm>({
-    initialValues: initialUserForm,
+  const formikBag = useFormik<LoginForm>({
+    initialValues: initialLoginForm,
     validationSchema: LoginFormValidationSchema,
     enableReinitialize: true,
     validateOnChange: false,
@@ -46,29 +52,21 @@ const IndexPage: NextPage = () => {
   const handleTogglePasswordVisibility = () =>
     setIsPasswordVisible((prev) => !prev);
 
-  const handleRegister= () => {
-    router.push("/auth/registration");
-  }
-
   return (
     <FormikContext.Provider value={formikBag}>
       <div className="flex w-full max-w-xl flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full space-y-8">
-          <div>
-            <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-              Sign in to Travel Log
-            </h2>
-          </div>
-          <div className="flex flex-col gap-2 rounded-md">
-            <div className="mb-4">
-              <FormInput
-                name="identifier"
-                label="Identifier"
-                isRequired
-                placeholder="Enter your Email/Username"
-                leftIcon={<MdOutlinePermIdentity />}
-              />
-            </div>
+          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+            Sign in to Travel Log
+          </h2>
+          <div className="flex flex-col gap-4 rounded-md">
+            <FormInput
+              name="identifier"
+              label="Email / Username"
+              isRequired
+              placeholder="Enter your Email / Username"
+              leftIcon={<MdOutlinePermIdentity />}
+            />
 
             <FormInput
               name="password"
@@ -79,9 +77,15 @@ const IndexPage: NextPage = () => {
               leftIcon={<MdOutlineLock />}
               rightIcon={
                 isPasswordVisible ? (
-                  <FaRegEye onClick={handleTogglePasswordVisibility} />
+                  <FaRegEye
+                    onClick={handleTogglePasswordVisibility}
+                    className="hover:cursor-pointer"
+                  />
                 ) : (
-                  <FaRegEyeSlash onClick={handleTogglePasswordVisibility} />
+                  <FaRegEyeSlash
+                    onClick={handleTogglePasswordVisibility}
+                    className="hover:cursor-pointer"
+                  />
                 )
               }
             />
@@ -92,19 +96,21 @@ const IndexPage: NextPage = () => {
           <Button
             className="btn-primary w-full justify-center"
             onClick={formikBag.submitForm}
+            isLoading={formikBag.isSubmitting}
           >
             Sign in
           </Button>
         </div>
 
-        <div className="mt-5 w-full">
-          If you do not have accout yet? Register now.
-          <Button
-            className="btn-secondary ml-5 w-full/2 align-item-right"
-            onClick ={handleRegister}
-            >
-            Click here to register
-            </Button>
+        <div className="mt-5 flex flex-col sm:flex-row">
+          <p>If you do not have an account yet? </p>
+
+          <div className="flex gap-1 sm:ml-1">
+            <Link href={NON_AUTHENTICATED_PAGE_URL.REGISTRATION}>
+              <p className="text-blue-600 hover:cursor-pointer">Register</p>
+            </Link>
+            <p> now.</p>
+          </div>
         </div>
       </div>
     </FormikContext.Provider>

@@ -1,7 +1,7 @@
 import NextAuth, { type NextAuthOptions, type User } from "next-auth";
 import CredentialProvider from "next-auth/providers/credentials";
 
-import { UserForm } from "@/pages/auth/login/types";
+import { LoginForm } from "@/pages/auth/login/types";
 
 import { loginAPI } from "@/services/authentication";
 
@@ -14,7 +14,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
-        const requestBody: UserForm = {
+        const requestBody: LoginForm = {
           identifier: credentials?.identifier || "",
           password: credentials?.password || "",
         };

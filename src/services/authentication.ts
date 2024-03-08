@@ -3,15 +3,15 @@ import axios from "axios";
 import { onParseResponse } from "@/utils/helpers";
 import logger from "@/utils/logger";
 
-import type { UserForm } from "@/pages/auth/login/types";
+import type { LoginForm } from "@/pages/auth/login/types";
+import { RegisterForm } from "@/pages/auth/registration/types";
+import { ProfileForm } from "@/pages/profile/types";
 
 import { store } from "@/redux/store";
 import { actions } from "@/redux/utils";
 
 import type { AuthenticationDetailResponse } from "@/types/server/authentication";
 import type { ApiResponse } from "@/types/server/config";
-import { RegisterForm } from "@/pages/auth/registration/types";
-import { ProfileForm } from "@/pages/profile/types";
 
 export const refreshToken = async (): Promise<string> => {
   try {
@@ -40,7 +40,7 @@ export const refreshToken = async (): Promise<string> => {
 };
 
 export const loginAPI = async (
-  values: UserForm
+  values: LoginForm
 ): Promise<ApiResponse<AuthenticationDetailResponse>> => {
   const response = await onParseResponse<AuthenticationDetailResponse>({
     method: "post",
@@ -63,7 +63,7 @@ export const logoutAPI = async (): Promise<ApiResponse<unknown>> => {
 
 //Register User
 export const registerAPI = async (
-  values: RegisterForm
+  values: Partial<RegisterForm>
 ): Promise<ApiResponse<unknown>> => {
   const response = await onParseResponse<unknown>({
     method: "post",
