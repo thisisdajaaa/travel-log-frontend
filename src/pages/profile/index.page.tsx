@@ -179,7 +179,7 @@ const Profile: NextPage = () => {
         <div className="mt-20 p-8">
           <div className="mb-10">
             <h2 className="mb-4 text-xl font-semibold">Basic Information</h2>
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid gap-6 md:grid-cols-2">
               <FormInput
                 name="username"
                 type="text"
@@ -240,7 +240,7 @@ const Profile: NextPage = () => {
           <div>
             <h2 className="mb-4 text-xl font-semibold">Address</h2>
 
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid gap-6 md:grid-cols-2">
               <FormInput
                 name="address1"
                 label="Line One"

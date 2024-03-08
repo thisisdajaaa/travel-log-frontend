@@ -21,7 +21,7 @@ const AvatarUpload: FC<FileUploadProps> = (props) => {
   }, [value]);
 
   return (
-    <div className="relative h-[168px] w-[168px] rounded-full border-4 border-white">
+    <div className="relative h-24 w-24 rounded-full border-4 border-white sm:h-40 sm:w-40">
       <Image
         alt="avatar-photo"
         src={memoizedValue}
