@@ -5,6 +5,8 @@ import React, { FC, useRef, useState } from "react";
 
 import { useAppDispatch } from "@/hooks";
 
+import { AUTHENTICATED_PAGE_URL } from "@/constants/pageUrl";
+
 import { actions } from "@/redux/utils";
 
 import { logoutAPI } from "@/services/authentication";
@@ -24,12 +26,12 @@ const Header: FC = () => {
 
   const handleProfile = () => {
     setIsDropdownOpen(false);
-    router.push("/profile");
+    router.push(AUTHENTICATED_PAGE_URL.PROFILE);
   };
 
   const handleHome = () => {
     setIsDropdownOpen(false);
-    router.push("/");
+    router.push(AUTHENTICATED_PAGE_URL.HOME);
   };
 
   const handleLogout = async () => {

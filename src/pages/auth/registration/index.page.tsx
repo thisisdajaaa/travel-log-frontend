@@ -1,66 +1,98 @@
-import React, { useState } from 'react'
-import { NextPage } from 'next'
-import { FormikContext, useFormik } from 'formik'
-import FormInput from '@/components/Formik/FormInput'
-import { MdEmail, MdKey, MdPeople } from 'react-icons/md'
-import Button from '@/components/Button'
-import { RegisterForm } from './types'
-import { initialRegistrationForm } from './fixtures'
-import { RegistrationFormValidationScheme } from './validations'
-import toast from 'react-hot-toast'
-import { useRouter } from 'next/router'
-import { registerAPI } from '@/services/authentication'
+import { FormikContext, useFormik } from "formik";
+import { NextPage } from "next";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import Link from 'next/link'
-import { FaArrowLeftLong } from 'react-icons/fa6'
+import { FaArrowLeftLong } from "react-icons/fa6";
+import { MdEmail, MdKey, MdPeople } from "react-icons/md";
+
+import {
+  AUTHENTICATED_PAGE_URL,
+  NON_AUTHENTICATED_PAGE_URL,
+} from "@/constants/pageUrl";
+
+import Button from "@/components/Button";
+import FormInput from "@/components/Formik/FormInput";
+
+import { registerAPI } from "@/services/authentication";
+
+import { initialRegistrationForm } from "./fixtures";
+import { RegisterForm } from "./types";
+import { RegistrationFormValidationScheme } from "./validations";
+import { LoginForm } from "../login/types";
 
 const IndexPage: NextPage = () => {
+  const router = useRouter();
 
-    const router = useRouter();
-    
-    const handleSubmit = async (values: RegisterForm) => {
-      const response = await registerAPI(values);
-      
-      if(response.success) {
-          toast.success("Successfully registerred.");
-        }else{
-          toast.error("Something went wrong...");
-      }
-       
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
+
+  const handleSubmit = async (values: RegisterForm) => {
+    const { email, password, username } = values;
+
+    const registerRequest: Partial<RegisterForm> = {
+      email,
+      password,
+      username,
     };
 
-    const formikBag = useFormik<RegisterForm>({
-      initialValues: initialRegistrationForm,
-      validationSchema: RegistrationFormValidationScheme,
-      enableReinitialize: true,
-      validateOnChange: false,
-      validateOnBlur: false,
-      onSubmit: handleSubmit,
+    const { success, message } = await registerAPI(registerRequest);
+
+    if (!success) {
+      toast.error(message as string);
+      return;
+    }
+
+    const request: LoginForm = {
+      identifier: email,
+      password,
+    };
+
+    const response = await signIn("credentials", {
+      ...request,
+      redirect: false,
     });
 
-    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+    if (!response?.ok) {
+      toast.error("Something went wrong!");
+      return;
+    }
 
-    const handleTogglePasswordVisibility = (action: String) => {
-      if(action == "password") {
-        setIsPasswordVisible(isPasswordVisible => !isPasswordVisible);
-      } 
-      if(action == "confirm") {
-        setIsConfirmPasswordVisible(visible => !visible);
-      }
-    };
+    router.push(AUTHENTICATED_PAGE_URL.HOME);
+    toast.success("Successfully registered and logged in user!");
+  };
 
-    return (
+  const formikBag = useFormik<RegisterForm>({
+    initialValues: initialRegistrationForm,
+    validationSchema: RegistrationFormValidationScheme,
+    enableReinitialize: true,
+    validateOnChange: false,
+    validateOnBlur: false,
+    onSubmit: handleSubmit,
+  });
+
+  const handleTogglePasswordVisibility = (action: string) => {
+    if (action == "password") {
+      setIsPasswordVisible((prev) => !prev);
+    }
+
+    if (action == "confirm") {
+      setIsConfirmPasswordVisible((prev) => !prev);
+    }
+  };
+
+  return (
     <FormikContext.Provider value={formikBag}>
-    <div className="flex w-full max-w-xl flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full space-y-8">
-        <div>
+      <div className="flex w-full max-w-xl flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="w-full space-y-8">
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
             New Registration
           </h2>
-        </div>
-        <div className="flex flex-col gap-2 rounded-md">
-          <div className="mb-4">
+          <div className="flex flex-col gap-4 rounded-md">
             <FormInput
               name="username"
               label="Username"
@@ -68,9 +100,7 @@ const IndexPage: NextPage = () => {
               placeholder="Enter your username"
               leftIcon={<MdPeople />}
             />
-          </div>
 
-          <div className="mb-4">
             <FormInput
               name="email"
               label="Email"
@@ -78,20 +108,25 @@ const IndexPage: NextPage = () => {
               placeholder="Enter your email"
               leftIcon={<MdEmail />}
             />
-          </div>
 
-          <FormInput
+            <FormInput
               name="password"
               label="Password"
               isRequired
-              type={isPasswordVisible ? "text": "password"}
+              type={isPasswordVisible ? "text" : "password"}
               placeholder="Enter your Password"
               leftIcon={<MdKey />}
-              rightIcon = {
-              isPasswordVisible ? (
-                  <FaRegEye onClick={handleTogglePasswordVisibility.bind(this, "password")}  />
-                ): (
-                  <FaRegEyeSlash onClick={handleTogglePasswordVisibility.bind(this, "password")} />
+              rightIcon={
+                isPasswordVisible ? (
+                  <FaRegEye
+                    onClick={() => handleTogglePasswordVisibility("password")}
+                    className="hover:cursor-pointer"
+                  />
+                ) : (
+                  <FaRegEyeSlash
+                    onClick={() => handleTogglePasswordVisibility("password")}
+                    className="hover:cursor-pointer"
+                  />
                 )
               }
             />
@@ -103,37 +138,44 @@ const IndexPage: NextPage = () => {
               type={isConfirmPasswordVisible ? "text" : "password"}
               placeholder="Confirm your Password"
               leftIcon={<MdKey />}
-              rightIcon = {
+              rightIcon={
                 isConfirmPasswordVisible ? (
-                  <FaRegEye onClick={handleTogglePasswordVisibility.bind(this, "confirm")}  />
+                  <FaRegEye
+                    onClick={() => handleTogglePasswordVisibility("confirm")}
+                    className="hover:cursor-pointer"
+                  />
                 ) : (
-                  <FaRegEyeSlash onClick={handleTogglePasswordVisibility.bind(this, "confirm")} />
+                  <FaRegEyeSlash
+                    onClick={() => handleTogglePasswordVisibility("confirm")}
+                    className="hover:cursor-pointer"
+                  />
                 )
               }
             />
           </div>
         </div>
 
-      <div className="mt-14 w-full">
-        <Button
-          className="btn-primary w-full justify-center"
-          onClick={formikBag.submitForm}
-        >
-          Register
-        </Button>
-      </div>
-
-      <div className="mt-14 w-full">
-        <Link href="/auth/login">
-        <a className="flex justify-center items-center">
-          <FaArrowLeftLong className="mr-1" />
-          Back to Login
-        </a>
-      </Link>
+        <div className="mt-14 w-full">
+          <Button
+            className="btn-primary w-full justify-center"
+            onClick={formikBag.submitForm}
+            isLoading={formikBag.isSubmitting}
+          >
+            Register
+          </Button>
         </div>
-    </div>
-    </FormikContext.Provider>
-  )
-}
 
-export default IndexPage
+        <div className="mt-6 w-full">
+          <Link href={NON_AUTHENTICATED_PAGE_URL.LOGIN}>
+            <a className="flex items-center justify-center">
+              <FaArrowLeftLong className="mr-1" />
+              Back to Login
+            </a>
+          </Link>
+        </div>
+      </div>
+    </FormikContext.Provider>
+  );
+};
+
+export default IndexPage;

@@ -6,7 +6,7 @@ import { useRouteTracking } from "@/hooks";
 
 import { whitelistPaths } from "@/config";
 
-import { AUTH_PAGE_URL } from "@/constants/pageUrl";
+import { NON_AUTHENTICATED_PAGE_URL } from "@/constants/pageUrl";
 
 import Loading from "@/components/Loading";
 
@@ -17,7 +17,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const onAuthentication = () => {
     if (isAuthenticated) router.replace("/");
-    if (isNotAuthenticated) router.replace(AUTH_PAGE_URL.LOGIN);
+    if (isNotAuthenticated) router.replace(NON_AUTHENTICATED_PAGE_URL.LOGIN);
   };
 
   const isWhitelistRoute = whitelistPaths.includes(router.pathname);

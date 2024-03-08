@@ -1,6 +1,6 @@
-import type { UserForm } from "../types";
+import type { LoginForm } from "../types";
 
-export const initialUserForm: UserForm = {
+export const initialLoginForm: LoginForm = {
   identifier: "",
   password: "",
 };
