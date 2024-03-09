@@ -6,4 +6,5 @@ export const NON_AUTHENTICATED_PAGE_URL = {
 export const AUTHENTICATED_PAGE_URL = {
   HOME: "/",
   PROFILE: "/profile",
+  TRAVEL_LOG: "/travel-log",
 };
