@@ -43,6 +43,7 @@ const TextArea: FC<TextAreaProps> = (props) => {
         readOnly={isReadOnly}
         className={clsxm(
           "textarea textarea-bordered w-full bg-white text-blackOut",
+          hasError && "textarea-error",
           textAreaClassname
         )}
         {...rest}

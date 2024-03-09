@@ -5,6 +5,7 @@ export enum ButtonVariant {
   "info",
   "default",
   "ghost",
+  "active",
 }
 
 export enum ButtonSize {
@@ -12,4 +13,10 @@ export enum ButtonSize {
   "sm",
   "md",
   "lg",
+}
+
+export enum ButtonShape {
+  "circle",
+  "square",
+  "default",
 }

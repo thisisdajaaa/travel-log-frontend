@@ -3,41 +3,40 @@ import React, { FC, useCallback, useState } from "react";
 
 import { useUpdateEffect } from "@/hooks";
 
-import FileUpload from "@/components/FileUpload";
+import ImageUpload from "@/components/ImageUpload";
+import type { FileWithPreview } from "@/components/ImageUpload/types";
 
-import type { FormFileUploadProps } from "./types";
+import type { FormImageUploadProps } from "./types";
 import ValidationMessage from "../ValidationMessage";
 
-const FormFileUpload: FC<FormFileUploadProps> = (props) => {
-  const { name, handleFileUpload, ...rest } = props;
+const FormImageUpload: FC<FormImageUploadProps> = (props) => {
+  const { name, handleImageUpload, ...rest } = props;
 
   const [, meta, helpers] = useField(name);
 
-  const [currentValue, setCurrentValue] = useState<File | null>(
-    meta.value || meta.initialValue
-  );
+  const [currentValue, setCurrentValue] = useState<
+    File | FileWithPreview[] | null
+  >(meta.value || meta.initialValue);
 
   useUpdateEffect(() => {
     setCurrentValue(meta.value);
   }, [meta.value]);
 
   const handleChange = useCallback(
-    (fileName: File) => {
+    (fileName: File | FileWithPreview[]) => {
       setCurrentValue(fileName);
       helpers.setValue(fileName);
       helpers.setTouched(true);
       helpers.setError("");
 
-      if (handleFileUpload) {
-        handleFileUpload(fileName);
-      }
+      if (handleImageUpload) handleImageUpload(fileName);
     },
-    [helpers, handleFileUpload]
+    [helpers, handleImageUpload]
   );
 
   return (
     <div className="flex flex-col">
-      <FileUpload
+      <ImageUpload
         {...rest}
         value={currentValue as File}
         onChange={handleChange}
@@ -48,4 +47,4 @@ const FormFileUpload: FC<FormFileUploadProps> = (props) => {
   );
 };
 
-export default FormFileUpload;
+export default FormImageUpload;

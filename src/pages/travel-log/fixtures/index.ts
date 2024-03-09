@@ -5,4 +5,5 @@ export const initialTravelLogForm: TravelLogForm = {
   description: "",
   visitDate: { startDate: null, endDate: null },
   country: "",
+  files: [],
 };
