@@ -12,6 +12,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     className,
     disabled: buttonDisabled,
     isLoading,
+    shape = "default",
     variant = "primary",
     ...rest
   } = props;
@@ -24,6 +25,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     variant === "danger" && ["btn-accent"],
     variant === "info" && ["btn-info"],
     variant === "ghost" && ["btn-ghost"],
+    variant === "active" && ["btn-active"],
+    variant === "default" && [],
+  ];
+
+  const shapes: ClassValue[] = [
+    shape === "circle" && ["btn-circle"],
+    shape === "square" && ["btn-square"],
     variant === "default" && [],
   ];
 
@@ -35,6 +43,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       className={clsxm(
         "btn",
         variants,
+        shapes,
         disabled && "btn-disabled disabled:cursor-not-allowed",
         isLoading &&
           "relative text-transparent transition-none hover:text-transparent disabled:cursor-wait",

@@ -4,21 +4,23 @@ import clsxm from "@/utils/clsxm";
 
 import type { InputProps } from "./types";
 
-const Input: FC<InputProps> = ({
-  hasError,
-  inputClassname,
-  containerClassname,
-  type,
-  value,
-  onFocus,
-  label,
-  leftIcon,
-  rightIcon,
-  disabled = false,
-  isRequired,
-  isReadOnly,
-  ...rest
-}) => {
+const Input: FC<InputProps> = (props) => {
+  const {
+    hasError,
+    inputClassname,
+    containerClassname,
+    type,
+    value,
+    onFocus,
+    label,
+    leftIcon,
+    rightIcon,
+    disabled = false,
+    isRequired,
+    isReadOnly,
+    ...rest
+  } = props;
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFocus = (event: FocusEvent<HTMLInputElement, Element>) => {
@@ -27,9 +29,7 @@ const Input: FC<InputProps> = ({
   };
 
   const handleWheel = (event: WheelEvent<HTMLInputElement>) => {
-    if (type === "number") {
-      event.currentTarget.blur();
-    }
+    if (type === "number") event.currentTarget.blur();
   };
 
   return (

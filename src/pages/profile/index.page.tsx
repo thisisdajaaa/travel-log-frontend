@@ -11,11 +11,12 @@ import { useFetchCountries, useFetchProfile } from "@/hooks";
 import { genderList } from "@/constants/gender";
 
 import Button from "@/components/Button";
-import { FileUploadOptions } from "@/components/FileUpload/config";
 import FormDatePicker from "@/components/Formik/FormDatePicker";
-import FormFileUpload from "@/components/Formik/FormFileUpload";
+import FormImageUpload from "@/components/Formik/FormImageUpload";
 import FormInput from "@/components/Formik/FormInput";
 import FormSelect from "@/components/Formik/FormSelect";
+import { ImageUploadOptions } from "@/components/ImageUpload/config";
+import type { FileWithPreview } from "@/components/ImageUpload/types";
 
 import { uploadCoverImage, uploadProfileImage } from "@/services/file";
 
@@ -133,18 +134,18 @@ const Profile: NextPage = () => {
     [countries]
   );
 
-  const handlePhotoChange = (type: FileUploadOptions) =>
-    debounce(async (value: File) => {
+  const handlePhotoChange = (type: ImageUploadOptions) =>
+    debounce(async (value: File | FileWithPreview[]) => {
       if (value) {
         switch (type) {
-          case FileUploadOptions.Avatar: {
-            await uploadProfileImage(value);
+          case ImageUploadOptions.Avatar: {
+            await uploadProfileImage(value as File);
             toast.success("Profile photo successfully saved!");
             break;
           }
 
-          case FileUploadOptions.Cover: {
-            await uploadCoverImage(value);
+          case ImageUploadOptions.Cover: {
+            await uploadCoverImage(value as File);
             toast.success("Cover photo successfully saved!");
             break;
           }
@@ -160,17 +161,17 @@ const Profile: NextPage = () => {
     <FormikContext.Provider value={formikBag}>
       <div className="mx-auto my-10 max-w-4xl overflow-hidden rounded-lg shadow-lg">
         <div className="relative">
-          <FormFileUpload
-            variant={FileUploadOptions.Cover}
+          <FormImageUpload
+            variant={ImageUploadOptions.Cover}
             name="coverPhoto"
-            handleFileUpload={handlePhotoChange(FileUploadOptions.Cover)}
+            handleImageUpload={handlePhotoChange(ImageUploadOptions.Cover)}
           />
 
           <div className="absolute -bottom-16 left-10">
-            <FormFileUpload
-              variant={FileUploadOptions.Avatar}
+            <FormImageUpload
+              variant={ImageUploadOptions.Avatar}
               name="profilePhoto"
-              handleFileUpload={handlePhotoChange(FileUploadOptions.Avatar)}
+              handleImageUpload={handlePhotoChange(ImageUploadOptions.Avatar)}
             />
           </div>
         </div>
@@ -178,7 +179,7 @@ const Profile: NextPage = () => {
         <div className="mt-20 p-8">
           <div className="mb-10">
             <h2 className="mb-4 text-xl font-semibold">Basic Information</h2>
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-7 md:grid-cols-2">
               <FormInput
                 name="username"
                 type="text"
@@ -239,7 +240,7 @@ const Profile: NextPage = () => {
           <div>
             <h2 className="mb-4 text-xl font-semibold">Address</h2>
 
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-7 md:grid-cols-2">
               <FormInput
                 name="address1"
                 label="Line One"
@@ -287,7 +288,7 @@ const Profile: NextPage = () => {
             </div>
           </div>
 
-          <div className="mt-6 flex justify-end gap-6">
+          <div className="mt-14 flex justify-end gap-6">
             <Button
               type="button"
               variant="danger"

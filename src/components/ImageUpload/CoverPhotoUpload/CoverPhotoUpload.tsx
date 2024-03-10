@@ -5,9 +5,9 @@ import { MdEdit } from "react-icons/md";
 
 import Button from "@/components/Button";
 
-import type { FileUploadProps } from "../types";
+import type { ImageUploadProps } from "../types";
 
-const CoverPhotoUpload: FC<FileUploadProps> = (props) => {
+const CoverPhotoUpload: FC<ImageUploadProps> = (props) => {
   const { value, onChange } = props;
 
   const { open } = useDropzone({
@@ -19,7 +19,9 @@ const CoverPhotoUpload: FC<FileUploadProps> = (props) => {
   const memoizedValue = useMemo(() => {
     if (!value) return "/images/mock-cover.jpg";
 
-    return typeof value != "string" ? URL.createObjectURL(value) : value;
+    return typeof value != "string" && value instanceof File
+      ? URL.createObjectURL(value as File)
+      : value;
   }, [value]);
 
   return (

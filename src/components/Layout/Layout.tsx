@@ -12,6 +12,7 @@ import { LayoutOptions } from "./config";
 import type { LayoutProps } from "./types";
 import Header from "../Header";
 import Loading from "../Loading";
+import Sidebar from "../Sidebar";
 
 const Layout: FC<PropsWithChildren<LayoutProps>> = ({
   mode = LayoutOptions.Authenticated,
@@ -53,19 +54,23 @@ const Layout: FC<PropsWithChildren<LayoutProps>> = ({
       >
         <Header />
 
-        <div className="flex flex-1 flex-col md:flex-row">
-          <main
-            className={clsx(
-              "flex-1 overflow-x-auto transition-all duration-200 ease-in-out scrollbar-hide"
-            )}
-            data-testid="content"
-          >
-            {isRouteChange ? (
-              <Loading height="h-[calc(100vh-108px)]" />
-            ) : (
-              children
-            )}
-          </main>
+        <div className="drawer lg:drawer-open">
+          <input type="checkbox" className="drawer-toggle" />
+          <div className="drawer-content flex flex-col">
+            <main
+              className={clsx(
+                "flex-1 overflow-x-auto transition-all duration-200 ease-in-out scrollbar-hide"
+              )}
+              data-testid="content"
+            >
+              {isRouteChange ? (
+                <Loading height="h-[calc(100vh-108px)]" />
+              ) : (
+                children
+              )}
+            </main>
+          </div>
+          <Sidebar />
         </div>
       </div>
     );

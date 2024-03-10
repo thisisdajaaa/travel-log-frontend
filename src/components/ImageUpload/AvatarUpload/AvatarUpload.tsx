@@ -3,9 +3,9 @@ import React, { FC, useMemo } from "react";
 import { useDropzone } from "react-dropzone";
 import { FaCamera } from "react-icons/fa";
 
-import type { FileUploadProps } from "../types";
+import type { ImageUploadProps } from "../types";
 
-const AvatarUpload: FC<FileUploadProps> = (props) => {
+const AvatarUpload: FC<ImageUploadProps> = (props) => {
   const { value, onChange } = props;
 
   const { open } = useDropzone({
@@ -17,7 +17,9 @@ const AvatarUpload: FC<FileUploadProps> = (props) => {
   const memoizedValue = useMemo(() => {
     if (!value) return "/images/mock-avatar.jpg";
 
-    return typeof value != "string" ? URL.createObjectURL(value) : value;
+    return typeof value != "string" && value instanceof File
+      ? URL.createObjectURL(value as File)
+      : value;
   }, [value]);
 
   return (

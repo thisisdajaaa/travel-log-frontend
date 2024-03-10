@@ -1,5 +1,6 @@
 import { FormikContext, useFormik } from "formik";
 import { NextPage } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
@@ -56,7 +57,16 @@ const IndexPage: NextPage = () => {
     <FormikContext.Provider value={formikBag}>
       <div className="flex w-full max-w-xl flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full space-y-8">
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+          <div className="text-center">
+            <Image
+              src="/svg/TravelLogo.svg"
+              alt="travel-logo-svg"
+              height={68}
+              width={68}
+              className="text-center"
+            />
+          </div>
+          <h2 className="text-center text-3xl font-bold tracking-tight text-gray-900">
             Sign in to Travel Log
           </h2>
           <div className="flex flex-col gap-4 rounded-md">

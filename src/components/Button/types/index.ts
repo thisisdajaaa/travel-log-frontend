@@ -1,23 +1,10 @@
 import type { ComponentPropsWithRef } from "react";
 
-export enum ButtonVariant {
-  "primary",
-  "secondary",
-  "danger",
-  "info",
-  "default",
-  "ghost",
-}
-
-export enum ButtonSize {
-  "xs",
-  "sm",
-  "md",
-  "lg",
-}
+import { ButtonShape, ButtonSize, ButtonVariant } from "../config";
 
 export type ButtonProps = {
   isLoading?: boolean;
   variant?: keyof typeof ButtonVariant;
   size?: keyof typeof ButtonSize;
+  shape?: keyof typeof ButtonShape;
 } & ComponentPropsWithRef<"button">;
