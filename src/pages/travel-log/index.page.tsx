@@ -1,64 +1,73 @@
 import { FormikContext, useFormik } from "formik";
+import moment from "moment";
 import { NextPage } from "next";
-import Image from "next/image";
 import React, { useCallback, useMemo, useRef } from "react";
-import { FaX } from "react-icons/fa6";
-
-import { useFetchCountries } from "@/hooks";
+import toast from "react-hot-toast";
 
 import Button from "@/components/Button";
 import { Carousel, CarouselItem } from "@/components/Carousel";
-import FormDatePicker from "@/components/Formik/FormDatePicker";
-import FormImageUpload from "@/components/Formik/FormImageUpload";
-import FormInput from "@/components/Formik/FormInput";
-import FormSelect from "@/components/Formik/FormSelect";
-import FormTextArea from "@/components/Formik/FormTextArea";
-import { ImageUploadOptions } from "@/components/ImageUpload/config";
-import { FileWithPreview } from "@/components/ImageUpload/types";
-import Modal from "@/components/Modal";
 
-import type { Option } from "@/types/client";
+import { CreateTravelLogRequest } from "@/types/server/travel-log";
 
+import TravelLogModal from "./components/TravelLogModal";
 import { initialTravelLogForm } from "./fixtures";
+import useCreateTravelLog from "./hooks/useCreateTravelLog";
+import useFetchTravelLogs from "./hooks/useFetchTravelLogs";
 import type { TravelLogForm } from "./types";
+import { TravelLogFormValidationSchema } from "./validations";
 
 const TravelLog: NextPage = () => {
-  const { data: countries } = useFetchCountries();
+  const { data: travelLogs, refetch } = useFetchTravelLogs();
+  const { mutateAsync } = useCreateTravelLog();
 
   const travelLogModalRef = useRef<HTMLDialogElement | null>(null);
 
   const handleSubmit = async (values: TravelLogForm) => {
-    console.log("Values: ", values);
+    const { country, description, images, title, visitDate } = values;
+
+    const request: CreateTravelLogRequest = {
+      countryId: +country,
+      title,
+      description,
+      visitStartDate: moment(visitDate?.startDate).toISOString(),
+      visitEndDate: moment(visitDate?.endDate).toISOString(),
+      images,
+    };
+
+    const { success, message } = await mutateAsync(request);
+
+    if (!success) {
+      toast.error(message as string);
+      return;
+    }
+
+    toast.success(message as string);
+    refetch();
+    handleClose();
   };
+
+  const memoizedTravelLogs = useMemo(() => {
+    return travelLogs?.data;
+  }, [travelLogs]);
 
   const formikBag = useFormik<TravelLogForm>({
     initialValues: initialTravelLogForm,
+    enableReinitialize: true,
+    validationSchema: TravelLogFormValidationSchema,
+    validateOnChange: false,
+    validateOnBlur: false,
     onSubmit: handleSubmit,
   });
 
-  const mappedCountryList: Option[] = useMemo(
-    () =>
-      countries?.data?.map((country) => ({
-        label: country.name,
-        value: country.id.toString(),
-      })) as Option[],
-    [countries]
-  );
-
   const handleShow = useCallback(() => {
+    formikBag.resetForm();
     travelLogModalRef.current?.showModal();
-  }, [travelLogModalRef]);
+  }, [formikBag]);
 
-  const removeFile = (file: FileWithPreview) => {
-    const { files } = formikBag.values;
-    const newFiles = [...files];
-
-    newFiles.splice(newFiles.indexOf(file), 1);
-
-    formikBag.setFieldValue("files", newFiles);
-  };
-
-  console.log("countries: ", countries);
+  const handleClose = useCallback(() => {
+    formikBag.resetForm();
+    travelLogModalRef.current?.close();
+  }, [formikBag]);
 
   return (
     <div className="mx-auto my-10 max-w-4xl overflow-hidden rounded-lg">
@@ -66,100 +75,41 @@ const TravelLog: NextPage = () => {
         <Button onClick={handleShow}>Add Travel Log</Button>
       </div>
 
-      <Modal
-        ref={travelLogModalRef}
-        handleClose={() => travelLogModalRef.current?.close()}
-        bodyClassname="w-11/12 max-w-7xl"
-      >
-        <h2 className="mb-6 text-lg font-bold uppercase">Add Travel Log</h2>
+      <FormikContext.Provider value={formikBag}>
+        <TravelLogModal ref={travelLogModalRef} handleClose={handleClose} />
+      </FormikContext.Provider>
 
-        <FormikContext.Provider value={formikBag}>
-          <div className="grid gap-7">
-            <FormInput
-              name="title"
-              type="text"
-              label="Title"
-              placeholder="Enter Title"
-              isRequired
-            />
-
-            <FormTextArea
-              name="description"
-              label="Description"
-              placeholder="Enter Description"
-              isRequired
-            />
-
-            <FormDatePicker name="visitDate" isRequired label="Visit Date" />
-
-            <FormSelect
-              name="country"
-              label="Country"
-              options={mappedCountryList}
-              isRequired
-            />
-
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text font-bold">
-                  Upload Images <span className="text-accent">*</span>
+      <div>
+        {memoizedTravelLogs?.map((travelLog) => (
+          <div
+            key={travelLog.id}
+            className="my-4 overflow-hidden rounded-lg bg-white shadow-lg"
+          >
+            <Carousel display="sequential" className="rounded-t-lg">
+              {travelLog.photos.map((photo) => (
+                <CarouselItem
+                  key={photo.id}
+                  src={photo.photoUrl}
+                  alt={`Photo ${photo.id}`}
+                />
+              ))}
+            </Carousel>
+            <div className="p-4">
+              <h2 className="mb-2 text-2xl font-bold">{travelLog.title}</h2>
+              <p className="mb-4 text-gray-700">{travelLog.description}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">
+                  Visit dates:{" "}
+                  {`${travelLog.visitStartDate} - ${travelLog.visitEndDate}`}
                 </span>
-              </label>
-
-              <FormImageUpload
-                name="files"
-                variant={ImageUploadOptions.Multi}
-              />
-            </div>
-
-            {formikBag.values.files && formikBag.values.files.length > 0 && (
-              <div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="h-[500px] w-[500px]">
-                    <h4 className="text-md mb-3 font-bold uppercase">
-                      Preview
-                    </h4>
-                    <Carousel display="sequential" className="rounded-box">
-                      {formikBag.values.files.map((file, index) => (
-                        <CarouselItem
-                          key={index}
-                          src={file?.preview}
-                          alt={file?.name}
-                        />
-                      ))}
-                    </Carousel>
-                  </div>
-
-                  <div className="h-[500px] overflow-y-auto">
-                    <h4 className="text-md font-bold uppercase">List</h4>
-                    <ul className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2">
-                      {formikBag.values.files.map((file) => (
-                        <li key={file.name} className="group relative">
-                          <div className="aspect-w-16 aspect-h-9 image-blur-overlay h-56 w-full overflow-hidden rounded-md bg-gray-200">
-                            <Image
-                              src={file.preview}
-                              alt={`Thumbnail for ${file.name}`}
-                              layout="fill"
-                              objectFit="contain"
-                              className="image-content transition-transform duration-300 group-hover:scale-110"
-                            />
-                          </div>
-                          <button
-                            className="absolute right-2 top-2 z-10 rounded-full bg-red-500 p-1 text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
-                            onClick={() => removeFile(file)}
-                          >
-                            <FaX size={10} />
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
+                <span className="mr-2 mb-2 inline-block rounded-full bg-gray-200 px-3 py-1 text-sm font-semibold text-gray-700">
+                  {travelLog.country.name}
+                </span>
               </div>
-            )}
+            </div>
           </div>
-        </FormikContext.Provider>
-      </Modal>
+        ))}
+      </div>
     </div>
   );
 };

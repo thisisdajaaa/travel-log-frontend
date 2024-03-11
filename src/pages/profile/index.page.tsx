@@ -21,7 +21,10 @@ import type { FileWithPreview } from "@/components/ImageUpload/types";
 import { uploadCoverImage, uploadProfileImage } from "@/services/file";
 
 import type { Option } from "@/types/client";
-import { ProfileDetailResponse, ProfileRequest } from "@/types/server/profile";
+import {
+  ProfileDetailResponse,
+  UpdateProfileRequest,
+} from "@/types/server/profile";
 
 import { initialProfileForm } from "./fixtures";
 import useUpdateProfile from "./hooks/useUpdateProfile";
@@ -90,7 +93,7 @@ const Profile: NextPage = () => {
       sex,
     } = values;
 
-    const request: ProfileRequest = {
+    const request: UpdateProfileRequest = {
       email,
       username,
       firstName,
@@ -124,6 +127,8 @@ const Profile: NextPage = () => {
     validateOnBlur: false,
     onSubmit: handleSubmit,
   });
+
+  console.log("formikBag: ", formikBag);
 
   const mappedCountryList: Option[] = useMemo(
     () =>

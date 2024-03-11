@@ -3,7 +3,7 @@ import { onParseResponse } from "@/utils/helpers";
 import type { ApiResponse } from "@/types/server/config";
 import type {
   ProfileDetailResponse,
-  ProfileRequest,
+  UpdateProfileRequest,
 } from "@/types/server/profile";
 
 export const getProfileAPI = async (): Promise<
@@ -18,7 +18,7 @@ export const getProfileAPI = async (): Promise<
 };
 
 export const updateProfileAPI = async (
-  values: Partial<ProfileRequest>
+  values: Partial<UpdateProfileRequest>
 ): Promise<ApiResponse<ProfileDetailResponse>> => {
   const response = await onParseResponse<ProfileDetailResponse>({
     method: "patch",

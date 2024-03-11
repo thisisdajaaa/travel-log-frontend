@@ -1,4 +1,4 @@
-export type ProfileRequest = {
+export type UpdateProfileRequest = {
   firstName: string;
   lastName: string;
   middleName: string;

@@ -1,7 +1,7 @@
 import { onParseResponse } from "@/utils/helpers";
 
 import type { ApiResponse } from "@/types/server/config";
-import type { UserDetailResponse } from "@/types/server/users";
+import type { UserDetailResponse } from "@/types/server/user";
 
 export const getUserByIdAPI = async (
   id: string

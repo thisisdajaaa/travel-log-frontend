@@ -7,5 +7,9 @@ export type TravelLogForm = {
   description: string;
   visitDate: DateValueType;
   country: string;
-  files: FileWithPreview[];
+  images: FileWithPreview[];
+};
+
+export type TravelLogModalProps = {
+  handleClose: () => void;
 };
